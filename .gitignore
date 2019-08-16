@@ -1,6 +1,6 @@
 .flaskenv
 .idea/*
 __pycache__/*
-textrazorclient/__pycache__/*
+newsfetcher/__pycache__/*
 venv/*
 
