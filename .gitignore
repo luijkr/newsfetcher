@@ -1,0 +1,6 @@
+.flaskenv
+.idea/*
+__pycache__/*
+textrazorclient/__pycache__/*
+venv/*
+
