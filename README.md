@@ -19,6 +19,13 @@ source venv/bin/activate
 Install dependencies
 
 ```
+pip install requests
+pip freeze > requirements.txt
+```
+
+or
+
+```
 pip install -r requirements.txt
 ```
 
