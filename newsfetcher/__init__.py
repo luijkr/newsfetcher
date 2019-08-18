@@ -9,7 +9,7 @@ class Client:
     def __init__(self, site):
         conf = Config()
         if site not in conf.valid_sites:
-            raise ValueError("Client: 'site' must be one of %r." % conf.valid_sites)
+            raise ValueError("Client: 'site' must be one of %r." % ", ".join(conf.valid_sites))
 
         self.site = site
         self.url = conf.rss_urls.__getattribute__(site)
@@ -20,6 +20,6 @@ class Client:
             content = response.content
             tree = Etree.ElementTree(Etree.fromstring(content))
             items = tree.find("channel").findall("item")
-            return [get_item_info(item, self.site) for item in items[:3]]
+            return [get_item_info(item, self.site) for item in items]
         else:
-            return [Item("", "", "")]
+            return [Item()]

@@ -3,4 +3,5 @@
 __pycache__/*
 newsfetcher/__pycache__/*
 venv/*
-
+newsfetcher/config/__pycache__/*
+newsfetcher/item/__pycache__/*
