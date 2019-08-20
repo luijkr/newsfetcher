@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as Etree
+from datetime import datetime
 
 
 class Item:
@@ -7,10 +8,11 @@ class Item:
         self.description = description
         self.url = url
         self.raw_xml = raw_xml
+        self.datetime_listed = datetime.now()
 
     def __repr__(self):
-        max_char = 30
-        return "<Title (short): {}; URL (short): {}".format(self.title[:max_char], self.url[:max_char])
+        max_char = 25
+        return "<Title (short): {}...; URL (short): {}...".format(self.title[:max_char], self.url[:max_char])
 
 
 def get_raw(item):
