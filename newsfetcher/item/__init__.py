@@ -8,7 +8,7 @@ class Item:
         self.description = description
         self.url = url
         self.raw_xml = raw_xml
-        self.datetime_listed = datetime.now()
+        self.datetime_listed = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
     def __repr__(self):
         max_char = 25

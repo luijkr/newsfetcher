@@ -1,13 +1,13 @@
+import requests
+import xml.etree.ElementTree as Etree
 from newsfetcher.item import Item, get_item_info
 from newsfetcher.config import Config
 
-import requests
-import xml.etree.ElementTree as Etree
+conf = Config()
 
 
-class Client:
+class NewsClient:
     def __init__(self, site):
-        conf = Config()
         if site not in conf.valid_sites:
             raise ValueError("Client: 'site' must be one of %r." % ", ".join(conf.valid_sites))
 
