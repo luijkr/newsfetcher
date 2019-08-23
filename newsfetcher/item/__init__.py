@@ -1,3 +1,4 @@
+import re
 import xml.etree.ElementTree as Etree
 from datetime import datetime
 
@@ -16,8 +17,9 @@ class Item:
 
 
 def get_raw(item):
-    raw_string = Etree.tostring(item)
-    return raw_string.decode("utf-8")
+    raw_bytes = Etree.tostring(item)
+    raw_string = raw_bytes.decode("utf-8")
+    return re.sub("\s+", "", raw_string)
 
 
 def get_nyt_item(item):
