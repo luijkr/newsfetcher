@@ -4,12 +4,16 @@ from datetime import datetime
 
 
 class Item:
-    def __init__(self, title="", description="", url="", raw_xml=""):
+    def __init__(self, source, title="", description="", url="", raw_xml="", analyzed=False):
+        now = datetime.utcnow()
+        self.source = source
         self.title = title
         self.description = description
         self.url = url
         self.raw_xml = raw_xml
-        self.datetime_listed = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        self.datetime_listed = now.strftime("%Y-%m-%d %H:%M:%S")
+        self.analyzed = analyzed
+        self.version = now.strftime("%Y-%m-%d")
 
     def __repr__(self):
         max_char = 25
@@ -23,11 +27,12 @@ def get_raw(item):
 
 
 def get_nyt_item(item):
+    source = "nyt"
     title = item.find("title").text
     description = item.find("description").text
     url = item.find("guid").text
     raw_xml = get_raw(item)
-    return Item(title, description, url, raw_xml)
+    return Item(source, title, description, url, raw_xml)
 
 
 def get_item_info(item, site):
