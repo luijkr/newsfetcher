@@ -1,5 +1,6 @@
 import requests
 import xml.etree.ElementTree as Etree
+from datetime import datetime
 from newsfetcher.item import Item, get_item_info
 from newsfetcher.config import Config
 
@@ -15,11 +16,14 @@ class NewsClient:
         self.url = conf.rss_urls.__getattribute__(site)
 
     def call(self):
+        now = datetime.utcnow()
+        datetime_listed = now.strftime("%Y-%m-%d %H:%M:%S")
+        version = now.strftime("%Y-%m-%d")
         response = requests.get(self.url)
         if response.ok:
             content = response.content
             tree = Etree.ElementTree(Etree.fromstring(content))
             items = tree.find("channel").findall("item")
-            return [get_item_info(item, self.site) for item in items]
+            return [get_item_info(item, self.site, datetime_listed, version) for item in items]
         else:
-            return [Item()]
+            return [Item("", "", "")]

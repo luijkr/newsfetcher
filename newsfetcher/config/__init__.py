@@ -1,6 +1,7 @@
 class RssUrls:
     def __init__(self):
         self.nyt = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
+        self.bbc = "http://feeds.bbci.co.uk/news/world/rss.xml"
 
 
 class Tables:
@@ -11,7 +12,7 @@ class Tables:
 class Config:
     def __init__(self):
         self.rss_urls = RssUrls()
-        self.valid_sites = ["nyt"]
+        self.valid_sites = ["nyt", "bbc"]
         self.host = "127.0.0.1"
         self.keyspace = "test01"
         self.tables = Tables()
