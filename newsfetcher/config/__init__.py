@@ -7,20 +7,25 @@ class RssUrls:
         keys = self.__dict__.keys()
         return [self.__dict__[key] for key in keys]
 
+    def to_dict(self):
+        return self.__dict__
+
 
 class Tables:
     def __init__(self):
         self.raw = "article_list"
-        self.analyzed = ""
+        self.analyzed = "article_profiles"
 
 
 class DatabaseConfig:
     def __init__(self):
         self.host = "localhost"
-        self.port = "27017"
+        self.port = 27017
+        self.database = "newsfetcher"
+        self.tables = Tables()
+
 
 class Config:
     def __init__(self):
         self.rss_urls = RssUrls()
-        self.valid_sites = ["nyt", "bbc"]
-        self.
+        self.database = DatabaseConfig()

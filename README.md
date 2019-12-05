@@ -19,8 +19,9 @@ source venv/bin/activate
 Install dependencies
 
 ```
-pip install feedparser, requests, pymongo
-pip freeze > requirements.txt
+pip install feedparser
+pip install requests
+pip install pymongo
 ```
 
 or
@@ -31,7 +32,8 @@ pip install -r requirements.txt
 
 Install and set up MongoDB and permissions
 ```
-tar -zxvf mongodb-*4.2.1.tgz
+wget https://fastdl.mongodb.org/osx/mongodb-macos-x86_64-4.2.1.tgz
+tar -zxvf mongodb-macos-x86_64-4.2.1.tgz
 mv mongodb-*-4.2.1 mongodb
 mkdir -p /data/db
 sudo chown -R `id -un` /data/db
@@ -40,12 +42,14 @@ sudo chown -R `id -un` /data/db
 Fire up MongoDB
 ```
 ~/mongodb/bin/mongod
+```
+
+If needed, MongoDB shell
+```
 ~/mongodb/bin/mongo
 ```
 
-Create database with tables
+Run program
 ```
-use newsfetcher
-db.createCollection("raw_feeds")
-db.createCollection("article_??")
+python main.py
 ```
