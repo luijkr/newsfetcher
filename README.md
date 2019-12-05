@@ -19,7 +19,7 @@ source venv/bin/activate
 Install dependencies
 
 ```
-pip install requests
+pip install feedparser, requests, pymongo
 pip freeze > requirements.txt
 ```
 
@@ -29,11 +29,23 @@ or
 pip install -r requirements.txt
 ```
 
-Run interactively
-
+Install and set up MongoDB and permissions
 ```
-from newsfetcher import Client
+tar -zxvf mongodb-*4.2.1.tgz
+mv mongodb-*-4.2.1 mongodb
+mkdir -p /data/db
+sudo chown -R `id -un` /data/db
+```
 
-my_client = Client()
-my_client.call()
+Fire up MongoDB
+```
+~/mongodb/bin/mongod
+~/mongodb/bin/mongo
+```
+
+Create database with tables
+```
+use newsfetcher
+db.createCollection("raw_feeds")
+db.createCollection("article_??")
 ```

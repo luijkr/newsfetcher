@@ -1,22 +1,14 @@
 import uuid
-from cassandra import ConsistencyLevel
-from cassandra.cluster import Cluster, NoHostAvailable
-from cassandra.query import SimpleStatement
-
+from pymongo import MongoClient
 
 class DatabaseClient:
-    def __init__(self, host, keyspace):
+    def __init__(self, host, port, database, collection):
         self.host = host
-        self.keyspace = keyspace
-        try:
-            self.client = Cluster([self.host]).connect(self.keyspace)
-        except NoHostAvailable as e:
-            print(e)
-            self.client = Cluster()
+        self.port = port
+        self.client = MongoClient(self.host, port)
+        self.db = self.client[database]
 
-    def get_from_table(self, table):
-        query = "SELECT * FROM {}".format(table)
-        statement = SimpleStatement(query, consistency_level=ConsistencyLevel.QUORUM)
+    def get_table(self, table):
         return self.client.execute(statement)
 
     def item_exists(self, article_id, table):

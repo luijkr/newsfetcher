@@ -1,11 +1,10 @@
-def handler(event, context):
-    from newsfetcher import conf, NewsClient
-    from newsfetcher.database import DatabaseClient
+from newsfetcher import conf, NewsClient
+news = NewsClient()
 
-    db = DatabaseClient(conf.host, conf.keyspace)
-    news = NewsClient()
-    for site in conf.valid_sites:
-        print("Fetching articles for: {}".format(site))
-        items = news.call(site)
-        for item in items[:3]:
-            print(item) # db.insert_items(items, conf.tables.raw)
+for site in conf.valid_sites:
+    print("Fetching articles for: {}".format(site))
+    news_response = news.call(site)
+    filename = "{}/{}_{}".format(conf.data_dir, news_response.site, news_response.timestamp)
+    with open(filename, "w") as file:
+        for item in news_response.items:
+            file.write(item.raw_xml + "\n")

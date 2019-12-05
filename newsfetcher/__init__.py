@@ -1,10 +1,17 @@
 import requests
 import xml.etree.ElementTree as Etree
 from datetime import datetime
-from newsfetcher.item import Item, get_item_info
+from newsfetcher.item import Item, get_raw
 from newsfetcher.config import Config
 
 conf = Config()
+
+
+class NewsResponse:
+    def __init__(self, site, timestamp, items):
+        self.site = site
+        self.timestamp = timestamp
+        self.items = items
 
 
 class NewsClient(object):
@@ -14,13 +21,11 @@ class NewsClient(object):
 
         url = conf.rss_urls.__getattribute__(site)
         now = datetime.utcnow()
-        datetime_listed = now.strftime("%Y-%m-%d %H:%M:%S")
-        version = now.strftime("%Y-%m-%d")
+        timestamp = now.strftime("%Y%m%d_%H%M%S")
         response = requests.get(url)
         if response.ok:
             content = response.content
             tree = Etree.ElementTree(Etree.fromstring(content))
-            items = tree.find("channel").findall("item")
-            return [get_item_info(item, site, datetime_listed, version) for item in items]
+            return NewsResponse(site, timestamp, [Item(site, get_raw(item), timestamp) for item in tree.find("channel").findall("item")])
         else:
-            return [Item("", "", "")]
+            return None
