@@ -16,10 +16,11 @@ class DatabaseClient:
 
     def insert_items(self, items):
         # private function to insert article into self.collection
+        n_total = len(items)
         items = [item for item in items if not self.item_exists(item)]
-        n_items = len(items)
-        if n_items > 0:
+        n_filtered = len(items)
+        if n_filtered > 0:
             self.collection.insert_many(items)
-            print("Inserted {} items in collection.\n".format(n_items))
+            print("Inserted {} out of {} items in collection.\n".format(n_filtered, n_total))
         else:
-            print("All items already in database.\n")
+            print("All {} items already in database.\n".format(n_total))

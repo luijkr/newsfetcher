@@ -2,6 +2,7 @@ class RssUrls:
     def __init__(self):
         self.nyt = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
         self.bbc = "http://feeds.bbci.co.uk/news/world/rss.xml"
+        self.aljazeera = "https://www.aljazeera.com/xml/rss/all.xml"
 
     def to_list(self):
         keys = self.__dict__.keys()
