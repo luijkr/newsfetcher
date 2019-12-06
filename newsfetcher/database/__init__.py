@@ -15,12 +15,11 @@ class DatabaseClient:
         return self.collection.count_documents({"_id": item._id}) > 0
 
     def insert_items(self, items):
-        # private function to insert article into self.collection
         n_total = len(items)
-        items = [item for item in items if not self.item_exists(item)]
-        n_filtered = len(items)
+        items_filtered = [item for item in items if not self.item_exists(item)]
+        n_filtered = len(items_filtered)
         if n_filtered > 0:
-            self.collection.insert_many(items)
+            self.collection.insert_many(items_filtered)
             print("Inserted {} out of {} items in collection.\n".format(n_filtered, n_total))
         else:
             print("All {} items already in database.\n".format(n_total))

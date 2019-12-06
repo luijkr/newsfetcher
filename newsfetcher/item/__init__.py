@@ -1,3 +1,2 @@
-def change_id(item):
-    item["_id"] = item.pop("id")
-    return item
+def get_item(item, timestamp):
+    return {"_id": item.get("id"), "timestamp": timestamp, "link": item.get("link"), "title": item.get("title")}
