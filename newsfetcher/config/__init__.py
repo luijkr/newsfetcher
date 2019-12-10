@@ -26,7 +26,7 @@ class Tables:
 
 class DatabaseConfig:
     def __init__(self):
-        self.host = "database"
+        self.host = "localhost"
         self.port = 27017
         self.database = "newsfetcher"
         self.tables = Tables()

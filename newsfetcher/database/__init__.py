@@ -8,11 +8,14 @@ class DatabaseClient:
         self.client = MongoClient(self.host, port)
         self.database = self.client[database]
 
+    def test_connection(self):
+        return self.client.server_info()
+
     def set_collection(self, collection):
         self.collection = self.database[collection]
 
     def item_exists(self, item):
-        return self.collection.count_documents({"_id": item._id}) > 0
+        return self.collection.count_documents({"_id": item["_id"]}) > 0
 
     def insert_items(self, items):
         n_total = len(items)

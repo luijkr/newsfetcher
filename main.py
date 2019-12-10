@@ -12,9 +12,9 @@ def main():
     urls = conf.rss_urls.to_dict()
 
     for key in urls:
+        now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         try:
             print("\nChecking feed for site '{}', with url '{}'\n".format(key, urls[key]))
-            now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             feed = feedparser.parse(urls[key])
             entries = [get_item(entry, now) for entry in feed.get("entries")]
             db.insert_items(entries)
@@ -23,5 +23,4 @@ def main():
 
 
 if __name__ == '__main__':
-    # print("Hello from within the container!")
     main()
