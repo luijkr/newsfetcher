@@ -9,7 +9,6 @@ class RssUrls:
         self.aljaz = "https://www.aljazeera.com/xml/rss/all.xml"
         self.rt = "https://www.rt.com/rss/news/"
 
-
     def to_list(self):
         keys = self.__dict__.keys()
         return [self.__dict__[key] for key in keys]
@@ -18,18 +17,25 @@ class RssUrls:
         return self.__dict__
 
 
+class Table:
+    def __init__(self, name, columns):
+        self.name = name
+        self.columns = columns
+
+
 class Tables:
     def __init__(self):
-        self.raw = "article_list"
-        self.analyzed = "article_profiles"
+        self.raw = Table(name="article_list", columns=["id", "site", "date_listed", "hyperlink", "title"])
+        self.analyzed = Table(name="article_profiles", columns=[])
 
 
 class DatabaseConfig:
     def __init__(self):
         self.host = "localhost"
-        self.port = 27017
         self.database = "newsfetcher"
         self.tables = Tables()
+        self.user = "newsfetcher_user"
+        self.password = "fetchnews!"
 
 
 class Config:

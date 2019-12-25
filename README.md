@@ -21,7 +21,7 @@ Install dependencies
 ```
 pip install feedparser
 pip install requests
-pip install pymongo
+pip install ...
 ```
 
 or
@@ -30,10 +30,22 @@ or
 pip install -r requirements.txt
 ```
 
-Install and set up MongoDB and permissions
+For install and set up MariaDB and permissions, see
 ```
-brew tap mongodb/brew
-brew install mongodb-community@4.2
+https://pimylifeup.com/raspberry-pi-mysql/
+```
+
+Set up database.
+```
+CREATE DATABASE newsfetcher;
+USE newsfetcher;
+```
+
+Create table for raw article list.
+```
+CREATE TABLE article_list (
+    
+)
 ```
 
 Run program

@@ -1,28 +1,31 @@
-from pymongo import MongoClient
+import mysql.connector
 
 
 class DatabaseClient:
-    def __init__(self, host, port, database):
+    def __init__(self, host, database, user, password):
         self.host = host
-        self.port = port
-        self.client = MongoClient(self.host, port)
-        self.database = self.client[database]
+        self.connection = mysql.connector.connect(user=user, password=password, host=host, database=database)
+        self.cursor = self.connection.cursor()
 
     def test_connection(self):
-        return self.client.server_info()
+        return self.connection.is_connected()
 
-    def set_collection(self, collection):
-        self.collection = self.database[collection]
+    def insert_item(self, item, table):
+        col_query = ", ".join(table.columns)
+        col_holders = ", ".join(["%s"] * len(table.columns))
+        values = (item["id"], item["site"], item["date_listed"], item["link"], item["title"])
+        sql_query = "INSERT INTO {} ({}) VALUES ({})".format(table.name, col_query, col_holders)
+        self.cursor.execute(sql_query, values)
 
-    def item_exists(self, item):
-        return self.collection.count_documents({"_id": item["_id"]}) > 0
-
-    def insert_items(self, items):
+    def insert_items(self, items, table):
         n_total = len(items)
-        items_filtered = [item for item in items if not self.item_exists(item)]
-        n_filtered = len(items_filtered)
-        if n_filtered > 0:
-            self.collection.insert_many(items_filtered)
-            print("Inserted {} out of {} items in collection.\n".format(n_filtered, n_total))
-        else:
-            print("All {} items already in database.\n".format(n_total))
+        items_entered = 0
+        for item in items:
+            try:
+                self.insert_item(item, table)
+                items_entered += 1
+            except:
+                pass
+
+        self.connection.commit()
+        print("Inserted {} out of {} items in collection.\n".format(items_entered, n_total))
