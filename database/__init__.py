@@ -11,7 +11,7 @@ class DatabaseClient:
         return self.connection.is_connected()
 
     def get_latest_fetched(self, table, day):
-        sql_query = "SELECT site, article_id, hyperlink FROM {} WHERE date_listed = '{}'".format(table.name, day)
+        sql_query = "SELECT article_id, hyperlink FROM {} WHERE date_listed = '{}'".format(table.name, day)
         self.cursor.execute(sql_query)
         return self.cursor.fetchall()
 
