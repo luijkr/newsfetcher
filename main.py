@@ -45,7 +45,7 @@ def analyze(conf, db, day):
     client = TextrazorClient()
     latest_items = db.get_latest_fetched(table=conf.database.tables.raw, day=day)
     max_tries = 3
-    for article_id, url in latest_items[:3]:
+    for article_id, url in latest_items:
         print("\nAnalyzing article id '{}'".format(article_id))
         for _ in range(max_tries):
             try:
