@@ -1,11 +1,9 @@
 .flaskenv
 .idea/*
 __pycache__/*
-newsfetcher/__pycache__/*
+*/__pycache__/*
+*/*/__pycache__/*
 venv/*
-newsfetcher/config/__pycache__/*
-newsfetcher/item/__pycache__/*
-newsfetcher/database/__pycache__/*
 dist/*
 .DS_Store
 test.py

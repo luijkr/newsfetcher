@@ -25,8 +25,8 @@ class Table:
 
 class Tables:
     def __init__(self):
-        self.raw = Table(name="article_list", columns=["id", "site", "date_listed", "hyperlink", "title"])
-        self.analyzed = Table(name="article_profiles", columns=[])
+        self.raw = Table(name="article_list", columns=["article_id", "site", "date_listed", "hyperlink", "title"])
+        self.analyzed = Table(name="article_profiles", columns=["article_id", "date_analyzed", "article_profile"])
 
 
 class DatabaseConfig:
