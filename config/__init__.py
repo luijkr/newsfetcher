@@ -1,6 +1,5 @@
 class RssUrls:
     def __init__(self):
-        self.cnn = "http://rss.cnn.com/rss/edition_world.rss"
         self.nyt = "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
         self.cnbc = "https://www.cnbc.com/id/15837362/device/rss/rss.html"
         self.huff = "https://www.huffpost.com/section/front-page/feed"

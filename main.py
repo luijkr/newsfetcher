@@ -44,7 +44,7 @@ def analyze(conf, db, day):
     """
     client = TextrazorClient()
     latest_items = db.get_latest_fetched(table=conf.database.tables.raw, day=day)
-    max_tries = 3
+    max_tries = 2
     for article_id, url in latest_items:
         print("\nAnalyzing article id '{}'".format(article_id))
         for _ in range(max_tries):
@@ -60,9 +60,9 @@ def analyze(conf, db, day):
                 time.sleep(10.0)
             except Exception as e:
                 print(
-                    "FAILED to get and/or store anaylzed article identifier '{}'\nWaiting 5 minutes before retrying.".format(
+                    "FAILED to get and/or store anaylzed article identifier '{}'\nWaiting 1 minute before retrying.".format(
                         article_id))
-                time.sleep(300.0)
+                time.sleep(60.0)
             else:
                 break
     db.connection.commit()
