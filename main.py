@@ -56,12 +56,11 @@ def analyze(conf, db, day):
                     "article_profile": results.to_json()
                 }
                 db.insert_analyzed_item(item, conf.database.tables.analyzed)
-                print("\nInserted article id '{}'".format(article_id))
+                print("Inserted article.")
                 time.sleep(10.0)
             except Exception as e:
                 print(
-                    "FAILED to get and/or store anaylzed article identifier '{}'\nWaiting 1 minute before retrying.".format(
-                        article_id))
+                    "FAILED to get and/or store anaylzed article.\nWaiting 1 minute before retrying.")
                 time.sleep(60.0)
             else:
                 break
