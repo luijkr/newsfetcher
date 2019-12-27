@@ -1,3 +1,4 @@
+import time
 import argparse
 import feedparser
 
@@ -45,14 +46,15 @@ def analyze(conf, db, day):
     latest_items = db.get_latest_fetched(table=conf.database.tables.raw, day=day)
     for article_id, url in latest_items:
         print("\nAnalyzing article id '{}'".format(article_id))
-        results = client.analyze(url)
-        item = {
-            "article_id": article_id,
-            "date_analyzed": day,
-             "article_profile": results.to_json()
-        }
         try:
+            results = client.analyze(url)
+            item = {
+                "article_id": article_id,
+                "date_analyzed": day,
+                 "article_profile": results.to_json()
+            }
             db.insert_analyzed_item(item, conf.database.tables.analyzed)
+            time.sleep(5.0)
         except:
             print("FAILED to get and/or store anaylzed article identifier '{}'".format(article_id))
     db.connection.commit()
