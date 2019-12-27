@@ -43,13 +43,13 @@ def analyze(conf, db, day):
     """
     client = TextrazorClient()
     latest_items = db.get_latest_fetched(table=conf.database.tables.raw, day=day)
-    for article_id, url in latest_items[:2]:
+    for article_id, url in latest_items:
         print("\nAnalyzing article id '{}'".format(article_id))
         results = client.analyze(url)
         item = {
             "article_id": article_id,
             "date_analyzed": day,
-            "article_profile": results.to_json()
+             "article_profile": results.to_json()
         }
         try:
             db.insert_analyzed_item(item, conf.database.tables.analyzed)
