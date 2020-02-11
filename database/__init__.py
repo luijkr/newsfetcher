@@ -1,43 +1,52 @@
-import mysql.connector
+import pg8000
+from typing import *
+from datetime import datetime
+from classes import Topic, Category
+from config import Table
+
+
+def create_insert_query(table: Table) -> str:
+    col_query = ", ".join(table.columns)
+    values_query = ", ".join(["%s"] * len(table.columns))
+    conflict_query = ", ".join(table.unique_cols)
+    update_query = ", ".join([
+        "{}=excluded.{}".format(col, col)
+        for col in table.update_cols
+    ])
+    return (
+        "INSERT INTO {} ({}) VALUES ({}) "
+        "ON CONFLICT ({}) DO UPDATE SET {};"
+    ).format(table.name, col_query, values_query, conflict_query, update_query)
 
 
 class DatabaseClient:
-    def __init__(self, host, database, user, password):
+    def __init__(self, host: str, database: str, user: str, password: str, port: str):
         self.host = host
-        self.connection = mysql.connector.connect(user=user, password=password, host=host, database=database)
+        self.connection = pg8000.connect(user=user, password=password, host=host, port=port, database=database)
         self.cursor = self.connection.cursor()
 
-    def test_connection(self):
-        return self.connection.is_connected()
+    def insert_items(self, items: List[List], table: Table):
+        query = create_insert_query(table)
+        self.cursor.executemany(query, items)
 
-    def get_latest_fetched(self, table, day):
-        sql_query = "SELECT article_id, hyperlink FROM {} WHERE date_listed = '{}'".format(table.name, day)
-        self.cursor.execute(sql_query)
+    def get_latest(self, table: Table, ts: datetime) -> List[any]:
+        day = ts.date().isoformat()
+        query = "SELECT uid, site, hyperlink FROM {} WHERE date_listed >= %s".format(table.name)
+        self.cursor.execute(query, (day, ))
         return self.cursor.fetchall()
 
-    def insert_fetched_item(self, item, table):
-        col_query = ", ".join(table.columns)
-        col_holders = ", ".join(["%s"] * len(table.columns))
-        values = (item["id"], item["site"], item["date_listed"], item["link"], item["title"])
-        sql_query = "INSERT INTO {} ({}) VALUES ({})".format(table.name, col_query, col_holders)
-        self.cursor.execute(sql_query, values)
+    def get_topic_uids(self, topics: List[Topic], table: Table):
+        query = "SELECT uid FROM {} WHERE topic_id=%s;".format(table.name)
+        return [self.get_topic_uid(topic, query) for topic in topics]
 
-    def insert_fetched_items(self, items, table):
-        n_total = len(items)
-        items_entered = 0
-        for item in items:
-            try:
-                self.insert_fetched_item(item, table)
-                items_entered += 1
-            except:
-                pass
+    def get_topic_uid(self, topic: Topic, query: str):
+        self.cursor.execute(query, (topic.topic_id, ))
+        return self.cursor.fetchone()[0]
 
-        self.connection.commit()
-        print("Inserted {} out of {} items in collection.\n".format(items_entered, n_total))
+    def get_category_uids(self, categories: List[Category], table: Table):
+        query = "SELECT uid FROM {} WHERE category_id=%s;".format(table.name)
+        return [self.get_category_uid(category, query) for category in categories]
 
-    def insert_analyzed_item(self, item, table):
-        col_query = ", ".join(table.columns)
-        col_holders = ", ".join(["%s"] * len(table.columns))
-        values = (item["article_id"], item["date_analyzed"], item["article_profile"])
-        sql_query = "INSERT INTO {} ({}) VALUES ({})".format(table.name, col_query, col_holders)
-        self.cursor.execute(sql_query, values)
+    def get_category_uid(self, category: Category, query: str):
+        self.cursor.execute(query, (category.category_id, ))
+        return self.cursor.fetchone()[0]
