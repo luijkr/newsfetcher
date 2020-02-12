@@ -1,8 +1,8 @@
 #!/bin/bash
 
-source /home/pi/newsfetcher-variables.sh
+source "$HOME/newsfetcher-variables.sh"
 
-cd /home/pi/newsfetcher || exit
+cd "$HOME/newsfetcher" || exit
 
 source venv/bin/activate
 

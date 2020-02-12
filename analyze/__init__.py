@@ -61,7 +61,7 @@ def analyze(conf: Config, db: DatabaseClient, ts: datetime):
     timestamp = ts.isoformat()
     latest_items = db.get_latest(table=conf.database.tables.article_list, ts=ts)
 
-    for article_id, site, url in latest_items[20:30]:
+    for article_id, site, url in latest_items:
         print("\nAnalyzing article from site '{}' at URL: {}".format(site, url))
 
         # analyze article
