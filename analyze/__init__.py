@@ -50,6 +50,32 @@ def get_article_topics(article_id, conf, db, topics):
     return article_topics
 
 
+def process_latest_article(article_id, conf, db, timestamp, url):
+    # analyze article
+    topics, categories = analyze_url(url, conf)
+
+    # insert topics
+    topics_values = [
+        [topic.topic_id, topic.wikilink, topic.wikidata_id, timestamp]
+        for topic in topics
+    ]
+    db.insert_items(topics_values, conf.database.tables.topics)
+
+    # commit topics to database
+    db.connection.commit()
+
+    # insert article-topics
+    article_topics = get_article_topics(article_id, conf, db, topics)
+    db.insert_items(article_topics, conf.database.tables.article_topics)
+
+    # insert article-categories
+    article_categories = get_article_categories(article_id, categories, conf, db)
+    db.insert_items(article_categories, conf.database.tables.article_categories)
+
+    # commit article to database
+    db.connection.commit()
+
+
 def analyze(conf: Config, db: DatabaseClient, ts: datetime):
     """
     Fetches article list from database, analyzes it using Textrazor, and stores these in separate table.
@@ -59,34 +85,18 @@ def analyze(conf: Config, db: DatabaseClient, ts: datetime):
     :return:      Nothing, only prints progress or failure
     """
     timestamp = ts.isoformat()
-    latest_items = db.get_latest(table=conf.database.tables.article_list, ts=ts)
+    latest_items = db.get_latest()
 
-    for article_id, site, url in latest_items:
-        print("\nAnalyzing article from site '{}' at URL: {}".format(site, url))
+    print("Fetched {} un-analyzed items. Starting...".format(len(latest_items)))
+    try:
+        for article_id, site, url in latest_items:
+            try:
+                print("Analyzing article from site '{}' at URL: {}".format(site, url))
+                process_latest_article(article_id, conf, db, timestamp, url)
+            except Exception as e:
+                print("Analysis failed:\n{}\n".format(e))
+                pass
 
-        # analyze article
-        topics, categories = analyze_url(url, conf)
-
-        # insert topics
-        topics_values = [
-            [topic.topic_id, topic.wikilink, topic.wikidata_id, timestamp]
-            for topic in topics
-        ]
-        db.insert_items(topics_values, conf.database.tables.topics)
-
-        # commit topics to database
-        db.connection.commit()
-
-        # insert article-topics
-        article_topics = get_article_topics(article_id, conf, db, topics)
-        db.insert_items(article_topics, conf.database.tables.article_topics)
-
-        # insert article-categories
-        article_categories = get_article_categories(article_id, categories, conf, db)
-        db.insert_items(article_categories, conf.database.tables.article_categories)
-
-        # commit article to database
-        db.connection.commit()
-
-        # pause
-        time.sleep(5)
+            time.sleep(5)
+    except Exception as e:
+        print(e)

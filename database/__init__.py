@@ -29,10 +29,12 @@ class DatabaseClient:
         query = create_insert_query(table)
         self.cursor.executemany(query, items)
 
-    def get_latest(self, table: Table, ts: datetime) -> List[any]:
-        day = ts.date().isoformat()
-        query = "SELECT uid, site, hyperlink FROM {} WHERE date_listed >= %s".format(table.name)
-        self.cursor.execute(query, (day, ))
+    def get_latest(self) -> List[any]:
+        query = "SELECT uid, site, hyperlink FROM articles t1 " \
+                "LEFT JOIN article_topics t2 ON t1.uid = t2.article_id " \
+                "WHERE t2.article_id IS NULL " \
+                "ORDER BY date_listed DESC; "
+        self.cursor.execute(query)
         return self.cursor.fetchall()
 
     def get_topic_uids(self, topics: List[Topic], table: Table):
